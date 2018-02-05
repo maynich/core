@@ -74,6 +74,10 @@ class BasicAuthModuleTest extends TestCase {
 			'PHP_AUTH_USER' => $userId,
 			'PHP_AUTH_PW' => '123456',
 		];
+		if (!$expectsUser) {
+			$this->expectException(\Exception::class);
+			$this->expectExceptionMessage('Invalid credentials');
+		}
 		$this->assertEquals($expectsUser ? $this->user : null, $module->auth($this->request));
 	}
 

@@ -52,10 +52,13 @@ class BasicAuthModule implements IAuthModule {
 		}
 		// check email and password
 		$users = $this->manager->getByEmail($request->server['PHP_AUTH_USER']);
-		if (count($users) !== 1) {
-			return null;
+		if (count($users) === 1) {
+			$user = $this->manager->checkPassword($users[0]->getUID(), $request->server['PHP_AUTH_PW']);
 		}
-		return $this->manager->checkPassword($users[0]->getUID(), $request->server['PHP_AUTH_PW']);
+		if ($user instanceof IUser) {
+			return $user;
+		}
+		throw new \Exception('Invalid credentials');
 	}
 
 	/**
