@@ -44,7 +44,9 @@ class InfoCheckerTest extends TestCase {
 
 	protected function setUp() {
 		parent::setUp();
-		$this->infoChecker = new InfoChecker(new InfoParser());
+		$this->infoChecker = new InfoChecker(
+			new InfoParser(), \OC::$server->getAppManager()
+		);
 	}
 
 	public function appInfoData() {
