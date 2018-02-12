@@ -180,6 +180,24 @@ class Local extends Common {
 			return false;
 		}
 		if (PHP_INT_SIZE === 4) {
+			/**
+			 * Check if exec is available to use before calling it.
+			 */
+			if (function_exists('exec') === false) {
+				return $this->filemtime($fullPath);
+			}
+
+			/**
+			 * Check if stat command is available to use before calling it in
+			 * exec.
+			 */
+			if (function_exists('shell_exec') === true) {
+				$result = shell_exec(sprintf("which %s", escapeshellarg('stat')));
+				if ($result === null) {
+					return $this->filemtime($fullPath);
+				}
+			}
+
 			if (\OC_Util::runningOn('linux')) {
 				return (int) exec ('stat -c %Y '. escapeshellarg ($fullPath));
 			} else if (\OC_Util::runningOn('bsd') || \OC_Util::runningOn('mac')) {
